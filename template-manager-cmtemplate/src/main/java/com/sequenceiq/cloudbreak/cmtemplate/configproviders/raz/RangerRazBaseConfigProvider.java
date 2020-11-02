@@ -29,8 +29,9 @@ public abstract class RangerRazBaseConfigProvider extends AbstractRoleConfigProv
         if (isConfigurationNeeded(cmTemplateProcessor, source)) {
             ApiClusterTemplateService coreSettings = createTemplate();
             Set<HostgroupView> hostgroupViews = source.getHostgroupViews();
+
             return hostgroupViews.stream()
-                    .filter(hg -> InstanceGroupType.GATEWAY.equals(hg.getInstanceGroupType()))
+                    .filter(hg -> hg.getName().toLowerCase().equals("master"))
                     .collect(Collectors.toMap(HostgroupView::getName, v -> coreSettings));
         }
         return Map.of();
