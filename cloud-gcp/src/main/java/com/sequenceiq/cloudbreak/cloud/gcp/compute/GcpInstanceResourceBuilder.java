@@ -122,7 +122,11 @@ public class GcpInstanceResourceBuilder extends AbstractGcpComputeBuilder {
                 projectId, location.getAvailabilityZone().value(), template.getFlavor()));
         instance.setDescription(description());
         instance.setName(buildableResource.get(0).getName());
-        instance.setHostname(getHostname(cloudStack, buildableResource));
+        // For FreeIPA hosts set the hostname during creation to avoid Google Network Manager overriding it with internal hostnames
+        String hostname = getHostname(cloudStack, (int) privateId);
+        if (hostname != null) {
+            instance.setHostname(hostname);
+        }
         instance.setCanIpForward(Boolean.TRUE);
         instance.setNetworkInterfaces(getNetworkInterface(context, computeResources, group, cloudStack));
         instance.setDisks(listOfDisks);
@@ -213,10 +217,15 @@ public class GcpInstanceResourceBuilder extends AbstractGcpComputeBuilder {
         return publicKey;
     }
 
-    private String getHostname(CloudStack cloudStack, List<CloudResource> buildableResource) {
+    private String getHostname(CloudStack cloudStack, int privateId) {
         String hostname = null;
-        if (!cloudStack.getGroups().isEmpty() && !cloudStack.getGroups().get(0).getInstances().isEmpty()) {
-            hostname = cloudStack.getGroups().get(0).getInstances().get(0).getStringParameter(CloudInstance.DISCOVERY_NAME);
+        if (!cloudStack.getGroups().isEmpty() && !cloudStack.getGroups().get(0).getInstances().isEmpty()
+                && cloudStack.getGroups().get(0).getInstances().get(privateId) != null) {
+            hostname = cloudStack.getGroups().get(0).getInstances().get(privateId).getStringParameter(CloudInstance.DISCOVERY_NAME);
+            // Setting hostnames for only FreeIPA hosts
+            if (hostname == null || !hostname.startsWith("ipaserver")) {
+                return null;
+            }
             LOGGER.debug("Setting FreeIPA hostname to {}", hostname);
         }
         return hostname;
