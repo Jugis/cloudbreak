@@ -6,17 +6,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.sequenceiq.mock.verification.intercept.EndpointLoggingInterceptor;
+import com.sequenceiq.mock.verification.intercept.EndpointTestDecoratorInterceptor;
 
 @Configuration
-public class EndpointLoggingInterceptorConfig implements WebMvcConfigurer {
+public class EndpointInterceptorConfig implements WebMvcConfigurer {
 
     @Inject
-    private EndpointLoggingInterceptor endpointLoggingInterceptor;
+    private EndpointTestDecoratorInterceptor endpointTestDecoratorInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(endpointLoggingInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(endpointTestDecoratorInterceptor).addPathPatterns("/**");
     }
 
 }

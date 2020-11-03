@@ -47,6 +47,14 @@ public class DefaultModelService {
         initInstanceMap(NUMBER_OF_SERVERS);
     }
 
+    public void reinit() {
+        startAllInstances();
+        grains.clear();
+        minions.clear();
+        products = null;
+        activeProfiles.clear();
+    }
+
     public void initInstanceMap(int numberOfServers) {
         if (instanceMap.isEmpty()) {
             addInstance(numberOfServers);

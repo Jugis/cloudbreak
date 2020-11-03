@@ -56,7 +56,7 @@ public class MockCloudProvider extends AbstractCloudProvider {
 
     private static final String DEFAULT_BLUEPRINT_CDH_VERSION = "7.0.2";
 
-    @Value("mock.infrastructure.host:localhost")
+    @Value("${mock.infrastructure.host:localhost}")
     private String infrastructureMockHost;
 
     @Inject

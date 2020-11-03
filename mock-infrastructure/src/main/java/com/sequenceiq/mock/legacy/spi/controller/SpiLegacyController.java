@@ -21,6 +21,8 @@ import com.sequenceiq.cloudbreak.cloud.model.CloudVmMetaDataStatus;
 import com.sequenceiq.cloudbreak.cloud.model.InstanceStatus;
 import com.sequenceiq.cloudbreak.cloud.model.InstanceTemplate;
 import com.sequenceiq.mock.legacy.clouderamanager.DefaultModelService;
+import com.sequenceiq.mock.legacy.response.MockResponse;
+import com.sequenceiq.mock.legacy.service.ResponseModifierService;
 
 @RestController
 @RequestMapping("/spi")
@@ -28,6 +30,9 @@ public class SpiLegacyController {
 
     @Inject
     private DefaultModelService defaultModelService;
+
+    @Inject
+    private ResponseModifierService responseModifierService;
 
     @GetMapping("/")
     public void launch() {
@@ -103,18 +108,20 @@ public class SpiLegacyController {
     }
 
     @PostMapping("/register_public_key")
-    public String registerPublicKey() {
-        return "";
+    public void registerPublicKey() {
     }
 
     @PostMapping("/unregister_public_key")
-    public String unregisterPublicKey() {
-        return "";
+    public void unregisterPublicKey(@RequestBody String body) {
     }
 
-    @GetMapping("/get_public_key/:publicKeyId")
-    public String getPubicKeyId() {
-        return "true";
+    @GetMapping("/get_public_key/{publicKeyId}")
+    public Boolean getPubicKeyId(@PathVariable("publicKeyId") String publicKeyId) {
+        MockResponse response = responseModifierService.getResponse("get", "/spi/get_public_key/{publicKeyId}");
+        if (response == null) {
+            return true;
+        }
+        return (Boolean) response.getResponse();
     }
 
 }

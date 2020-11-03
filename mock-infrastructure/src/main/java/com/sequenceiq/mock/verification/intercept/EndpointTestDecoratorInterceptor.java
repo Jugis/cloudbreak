@@ -17,9 +17,9 @@ import com.sequenceiq.mock.verification.Call;
 import com.sequenceiq.mock.verification.RequestResponseStorageService;
 
 @Component
-public class EndpointLoggingInterceptor implements HandlerInterceptor {
+public class EndpointTestDecoratorInterceptor implements HandlerInterceptor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EndpointLoggingInterceptor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EndpointTestDecoratorInterceptor.class);
 
     @Inject
     private RequestResponseStorageService requestResponseStorageService;

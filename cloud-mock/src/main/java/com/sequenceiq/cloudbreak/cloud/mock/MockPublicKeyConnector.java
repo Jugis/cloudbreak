@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.sequenceiq.cloudbreak.cloud.PublicKeyConnector;
 import com.sequenceiq.cloudbreak.cloud.exception.CloudConnectorException;
-import com.sequenceiq.cloudbreak.cloud.model.CloudCredential;
 import com.sequenceiq.cloudbreak.cloud.model.Platform;
 import com.sequenceiq.cloudbreak.cloud.model.Variant;
 import com.sequenceiq.cloudbreak.cloud.model.publickey.PublicKeyDescribeRequest;
@@ -53,8 +52,7 @@ public class MockPublicKeyConnector implements PublicKeyConnector {
 
     @Override
     public boolean exists(PublicKeyDescribeRequest request) {
-        try (Response response = mockUrlFactory.get("/spi/unregister_public_key")
-                .post(Entity.entity(request.getPublicKeyId(), MediaType.APPLICATION_JSON_TYPE))) {
+        try (Response response = mockUrlFactory.get("/spi/get_public_key/" + request.getPublicKeyId()).get()) {
             if (response.getStatus() != 200) {
                 throw new CloudConnectorException(response.readEntity(String.class));
             }
@@ -63,11 +61,6 @@ public class MockPublicKeyConnector implements PublicKeyConnector {
         } catch (KeyManagementException e) {
             throw new CloudConnectorException(e.getMessage(), e);
         }
-    }
-
-    private String getMockEndpoint(CloudCredential cloudCredential) {
-        MockCredentialView mockCredentialView = mockCredentialViewFactory.createCredetialView(cloudCredential);
-        return mockCredentialView.getMockEndpoint();
     }
 
     @Override
